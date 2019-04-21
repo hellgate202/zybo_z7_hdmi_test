@@ -1,0 +1,7 @@
+../ip/axi4_video_pattern_gen/lib/axi4_lib/src/interface/axi4_stream_if.sv
+../ip/axi4_video_pattern_gen/src/axi4_video_pattern_gen.sv
+../ip/hdmi_tx/src/axi4_video_to_hv_conv.sv
+../ip/hdmi_tx/src/tmds_enc.sv
+../ip/hdmi_tx/src/hdmi_phy.sv
+../ip/hdmi_tx/src/hdmi_tx.sv
+./top_tb.sv
