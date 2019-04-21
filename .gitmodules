@@ -1,0 +1,6 @@
+[submodule "ip/axi4_video_pattern_gen"]
+	path = ip/axi4_video_pattern_gen
+	url = https://github.com/hellgate202/axi4_video_pattern_gen
+[submodule "ip/hdmi_tx"]
+	path = ip/hdmi_tx
+	url = https://github.com/hellgate202/hdmi_tx
