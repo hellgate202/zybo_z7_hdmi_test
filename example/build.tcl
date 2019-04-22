@@ -1,3 +1,4 @@
+start_gui
 # Project creation
 create_project zybo_z7_hdmi_test . -part xc7z020clg400-1
 
@@ -22,113 +23,79 @@ set_property ip_repo_paths [list \
 update_ip_catalog 
 
 # Add Clock Wizard to create 74.25 MHz pixel clock
-#create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 px_clk_mmcm
-#set_property -dict [list                       \
-#  CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {74.25}    \
-#  CONFIG.USE_LOCKED                 {false}    \
-#  CONFIG.USE_RESET                  {false}]   \
-#[get_bd_cells px_clk_mmcm]
-#
-## Add Processing System Reset instances to synchronize resets
-#create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 ref_clk_rst
-#create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 px_clk_rst
-#
-## Add CSI2-RX IP-core
-#create_bd_cell -type ip -vlnv hellgate:user:csi2_2_lane_rx:1.0 csi2_2_lane_rx
-#
-## Add JTAG-AXI Controller
-#create_bd_cell -type ip -vlnv xilinx.com:ip:jtag_axi:1.2 jtag_axi
-#set_property -dict [list CONFIG.PROTOCOL {2}] [get_bd_cells jtag_axi]
-#
-### Add AXI4-Interconnect to connect JTAG controller and CSI2 IP-core
-#create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect
-#set_property -dict [list CONFIG.NUM_MI {2}] [get_bd_cells axi_interconnect]
-#
-## Connceting modules together
-#connect_bd_net [get_bd_pins zynq_ps/FCLK_CLK0] [get_bd_pins px_clk_mmcm/clk_in1]
-#connect_bd_net [get_bd_pins zynq_ps/FCLK_CLK0] [get_bd_pins csi2_2_lane_rx/ref_clk_i]
-#connect_bd_net [get_bd_pins zynq_ps/FCLK_CLK0] [get_bd_pins ref_clk_rst/slowest_sync_clk]
-#connect_bd_net [get_bd_pins zynq_ps/FCLK_RESET0_N] [get_bd_pins ref_clk_rst/ext_reset_in]
-#connect_bd_net [get_bd_pins zynq_ps/FCLK_RESET0_N] [get_bd_pins px_clk_rst/ext_reset_in]
-#connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins px_clk_rst/slowest_sync_clk]
-#connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins csi2_2_lane_rx/px_clk_i]
-#connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins jtag_axi/aclk]
-#connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/ACLK]
-#connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/S00_ACLK]
-#connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/M00_ACLK]
-#connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins axi_interconnect/M01_ACLK]
-#connect_bd_net [get_bd_pins ref_clk_rst/peripheral_reset] [get_bd_pins csi2_2_lane_rx/ref_rst_i]
-#connect_bd_net [get_bd_pins px_clk_rst/peripheral_aresetn] [get_bd_pins jtag_axi/aresetn]
-#connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/M00_ARESETN]
-#connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/M01_ARESETN]
-#connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/S00_ARESETN]
-#connect_bd_net [get_bd_pins px_clk_rst/interconnect_aresetn] [get_bd_pins axi_interconnect/ARESETN]
-#connect_bd_net [get_bd_pins px_clk_rst/peripheral_reset] [get_bd_pins csi2_2_lane_rx/px_rst_i]
-#connect_bd_intf_net [get_bd_intf_pins jtag_axi/M_AXI] -boundary_type upper [get_bd_intf_pins axi_interconnect/S00_AXI]
-#connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_interconnect/M00_AXI] [get_bd_intf_pins csi2_2_lane_rx/sccb_ctrl]
-#connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_interconnect/M01_AXI] [get_bd_intf_pins csi2_2_lane_rx/csi2_csr]
-#
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_clk_p_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_clk_n_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_lp_clk_p_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_lp_clk_n_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_data_p_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_lp_data_p_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_data_n_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/dphy_lp_data_n_i]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/cam_pwup_o]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/sccb_scl_io]
-#make_bd_pins_external  [get_bd_pins csi2_2_lane_rx/sccb_sda_io]
-#make_bd_intf_pins_external  [get_bd_intf_pins csi2_2_lane_rx/video]
-#set_property CONFIG.FREQ_HZ {74250000} [get_bd_intf_ports video_0]
-#
-## Mapping slave address space
-#assign_bd_address [get_bd_addr_segs {csi2_2_lane_rx/sccb_ctrl/sccb_ctrl }]
-#set_property offset 0x00000000 [get_bd_addr_segs {jtag_axi/Data/SEG_csi2_2_lane_rx_sccb_ctrl}]
-#assign_bd_address [get_bd_addr_segs {csi2_2_lane_rx/csi2_csr/csi2_csr }]
-#set_property offset 0x00010000 [get_bd_addr_segs {jtag_axi/Data/SEG_csi2_2_lane_rx_csi2_csr}]
-#
-## Saving block design
-#regenerate_bd_layout
-#save_bd_design
-#
-## Create HDL Wraper
-#make_wrapper -files [get_files ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd] -top
-#add_files -norecurse ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/hdl/csi2_zybo_z7_example_wrapper.v
-#update_compile_order -fileset sources_1
-#
-## Generate Output Products
-#generate_target all [get_files  ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
-#catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_zynq_ps_0] }
-#catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_px_clk_mmcm_0] }
-#catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_ref_clk_rst_0] }
-#catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_px_clk_rst_0] }
-#catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_csi2_2_lane_rx_0] }
-#catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_jtag_axi_0] }
-#catch { config_ip_cache -export [get_ips -all csi2_zybo_z7_example_xbar_0] }
-#export_ip_user_files -of_objects [get_files ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd] -no_script -sync -force -quiet
-#create_ip_run [get_files -of_objects [get_fileset sources_1] ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
-#launch_runs -jobs 8 {                           \
-#  csi2_zybo_z7_example_zynq_ps_0_synth_1        \
-#  csi2_zybo_z7_example_px_clk_mmcm_0_synth_1    \
-#  csi2_zybo_z7_example_ref_clk_rst_0_synth_1    \
-#  csi2_zybo_z7_example_px_clk_rst_0_synth_1     \
-#  csi2_zybo_z7_example_csi2_2_lane_rx_0_synth_1 \
-#  csi2_zybo_z7_example_jtag_axi_0_synth_1       \
-#  csi2_zybo_z7_example_xbar_0_synth_1 }
-#
-#  wait_on_run csi2_zybo_z7_example_zynq_ps_0_synth_1
-#  wait_on_run csi2_zybo_z7_example_px_clk_mmcm_0_synth_1
-#  wait_on_run csi2_zybo_z7_example_ref_clk_rst_0_synth_1
-#  wait_on_run csi2_zybo_z7_example_px_clk_rst_0_synth_1
-#  wait_on_run csi2_zybo_z7_example_csi2_2_lane_rx_0_synth_1
-#  wait_on_run csi2_zybo_z7_example_jtag_axi_0_synth_1
-#  wait_on_run csi2_zybo_z7_example_xbar_0_synth_1
-#
-## RTL Elaboration
-#create_ip_run [get_files -of_objects [get_fileset sources_1] ./csi2_zybo_z7_example.srcs/sources_1/bd/csi2_zybo_z7_example/csi2_zybo_z7_example.bd]
-#synth_design -rtl -name rtl_1
-#
+create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 px_clk_mmcm
+set_property -dict [list                       \
+  CONFIG.CLKOUT2_USED               {true}     \
+  CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {148.5}    \
+  CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {742.5}    \
+  CONFIG.USE_LOCKED                 {false}    \
+  CONFIG.USE_RESET                  {false}]   \
+[get_bd_cells px_clk_mmcm]
+
+# Add Processing System Reset instances to synchronize resets
+create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 px_clk_rst
+
+# Add HDMI TX IP-core
+create_bd_cell -type ip -vlnv hellgate202:user:hdmi_tx:1.0 hdmi_tx_0
+
+# Add Pattern Generator
+create_bd_cell -type ip -vlnv hellgate202:user:axi4_video_pattern_gen:1.0 pattern_gen
+
+# Connceting modules together
+connect_bd_net [get_bd_pins zynq_ps/FCLK_CLK0] [get_bd_pins px_clk_mmcm/clk_in1]
+connect_bd_net [get_bd_pins zynq_ps/FCLK_RESET0_N] [get_bd_pins px_clk_rst/ext_reset_in]
+connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins px_clk_rst/slowest_sync_clk]
+connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins hdmi_tx_0/px_clk_i]
+connect_bd_net [get_bd_pins px_clk_mmcm/clk_out1] [get_bd_pins pattern_gen/clk_i]
+connect_bd_net [get_bd_pins px_clk_mmcm/clk_out2] [get_bd_pins hdmi_tx_0/tmds_clk_i]
+connect_bd_net [get_bd_pins px_clk_rst/peripheral_reset] [get_bd_pins pattern_gen/rst_i]
+connect_bd_net [get_bd_pins px_clk_rst/peripheral_reset] [get_bd_pins hdmi_tx_0/rst_i]
+connect_bd_intf_net [get_bd_intf_pins pattern_gen/video_o] [get_bd_intf_pins hdmi_tx_0/video_i]
+
+make_bd_pins_external [get_bd_pins hdmi_tx_0/hdmi_tx2_p_o] \
+                      [get_bd_pins hdmi_tx_0/hdmi_tx1_p_o] \
+                      [get_bd_pins hdmi_tx_0/hdmi_tx2_n_o] \
+                      [get_bd_pins hdmi_tx_0/hdmi_tx1_n_o] \
+                      [get_bd_pins hdmi_tx_0/hdmi_tx0_n_o] \
+                      [get_bd_pins hdmi_tx_0/hdmi_tx0_p_o] \
+                      [get_bd_pins hdmi_tx_0/hdmi_clk_p_o] \
+                      [get_bd_pins hdmi_tx_0/hdmi_clk_n_o]
+
+# Saving block design
+regenerate_bd_layout
+save_bd_design
+
+# Create HDL Wraper
+make_wrapper -files [get_files ./zybo_z7_hdmi_test.srcs/sources_1/bd/zybo_z7_hdmi_test/zybo_z7_hdmi_test.bd] -top
+add_files -norecurse ./zybo_z7_hdmi_test.srcs/sources_1/bd/zybo_z7_hdmi_test/hdl/zybo_z7_hdmi_test_wrapper.v
+update_compile_order -fileset sources_1
+
+# Generate Output Products
+generate_target all [get_files  ./zybo_z7_hdmi_example.srcs/sources_1/bd/zybo_z7_hdmi_test/zybo_z7_hdmi_test.bd]
+catch { config_ip_cache -export [get_ips -all zybo_z7_hdmi_test_zynq_ps_0] }
+catch { config_ip_cache -export [get_ips -all zybo_z7_hdmi_test_px_clk_mmcm_0] }
+catch { config_ip_cache -export [get_ips -all zybo_z7_hdmi_test_px_clk_rst_0] }
+catch { config_ip_cache -export [get_ips -all zybo_z7_hdmi_test_hdmi_tx_0_0] }
+catch { config_ip_cache -export [get_ips -all zybo_z7_hdmi_test_pattern_gen_0] }
+export_ip_user_files -of_objects [get_files ./zybo_z7_hdmi_test.srcs/sources_1/bd/zybo_z7_hdmi_test/zybo_z7_hdmi_test.bd] -no_script -sync -force -quiet
+create_ip_run [get_files -of_objects [get_fileset sources_1] ./zybo_z7_hdmi_test.srcs/sources_1/bd/zybo_z7_hdmi_test/zybo_z7_hdmi_test.bd]
+
+launch_runs -jobs 8 { zybo_z7_hdmi_test_zynq_ps_0_synth_1       \
+                      zybo_z7_hdmi_test_px_clk_mmcm_0_synth_1   \
+                      zybo_z7_hdmi_test_px_clk_rst_0_synth_1    \
+                      zybo_z7_hdmi_test_hdmi_tx_0_0_synth_1     \
+                      zybo_z7_hdmi_test_pattern_gen_0_synth_1 }
+
+wait_on_run zybo_z7_hdmi_test_zynq_ps_0_synth_1
+wait_on_run zybo_z7_hdmi_test_px_clk_mmcm_0_synth_1
+wait_on_run zybo_z7_hdmi_test_px_clk_rst_0_synth_1
+wait_on_run zybo_z7_hdmi_test_hdmi_tx_0_0_synth_1
+wait_on_run zybo_z7_hdmi_test_pattern_gen_0_synth_1
+
+# RTL Elaboration
+create_ip_run [get_files -of_objects [get_fileset sources_1] ./zybo_z7_hdmi_test.srcs/sources_1/bd/zybo_z7_hdmi_test/zybo_z7_hdmi_test.bd]
+synth_design -rtl -name rtl_1
+
 ## Pin placement
 #place_ports {dphy_data_p_i_0[0]} M19
 #place_ports {dphy_data_p_i_0[1]} L16
