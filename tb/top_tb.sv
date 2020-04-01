@@ -38,13 +38,13 @@ task automatic apply_rst();
 endtask
 
 axi4_stream_if #(
-  .DATA_WIDTH ( 32     ),
-  .USER_WIDTH ( 1      ),
-  .ID_WIDTH   ( 1      ),
-  .DEST_WIDTH ( 1      )
+  .TDATA_WIDTH ( 32     ),
+  .TUSER_WIDTH ( 1      ),
+  .TID_WIDTH   ( 1      ),
+  .TDEST_WIDTH ( 1      )
 ) video (
-  .aclk       ( px_clk ),
-  .aresetn    ( !rst   )
+  .aclk        ( px_clk ),
+  .aresetn     ( !rst   )
 );
 
 axi4_video_pattern_gen #(
@@ -59,8 +59,6 @@ axi4_video_pattern_gen #(
 );
 
 hdmi_tx #(
-  .X_RES        ( X_ACTIVE ),
-  .Y_RES        ( Y_ACTIVE ),
   .PX_WIDTH     ( PX_WIDTH )
 ) hdmit_tx (
   .px_clk_i     ( px_clk   ),
